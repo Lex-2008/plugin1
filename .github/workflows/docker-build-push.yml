@@ -7,7 +7,17 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-24.04-arm
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+            docker_arch: amd64
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            docker_arch: arm64v8
+
+    runs-on: ${{ matrix.runner }}
 
     permissions:
       contents: read
@@ -26,8 +36,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/lex-2008/plugin1:latest .
+          docker build --build-arg ARCH=${{ matrix.docker_arch }} -t ghcr.io/lex-2008/plugin1:latest .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/lex-2008/plugin1:latest
+          docker push ghcr.io/lex-2008/plugin1:${{ matrix.arch }}
