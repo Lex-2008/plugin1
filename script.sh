@@ -1,3 +1,9 @@
 #!/bin/sh -x
 
-curl ${PLUGIN_URL}
+cd "${PLUGIN_WORKDIR:-.}"
+
+pwd
+ls
+
+cmake --preset "${PLUGIN_PRESET}"
+cmake --build --preset "${PLUGIN_PRESET}"
